@@ -49,6 +49,7 @@ cp /usr/lib/x86_64-linux-gnu/libstdc++.so.6 squashfs-root/usr/optional/libstdc++
 printf "#include <bits/stdc++.h>\nint main(){std::make_exception_ptr(0);std::pmr::get_default_resource();}" | $CXX -x c++ -std=c++2a -o $HOME/squashfs-root/usr/optional/checker -
 
 echo $DOLPHINVER > $HOME/squashfs-root/version.txt
+cp $HOME/squashfs-root/version.txt /dolphin
 
 unset QT_PLUGIN_PATH
 unset LD_LIBRARY_PATH
