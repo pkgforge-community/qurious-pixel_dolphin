@@ -13,8 +13,8 @@ ln -s /home/yuzu/.conan /root
 cd /dolphin
 
 git clone https://github.com/dolphin-emu/dolphin.git
-git submodule update --init --recursive
 cd dolphin/
+git submodule update --init --recursive
 
 ### GET BUILD Number
 export LASTCOMMIT=$(git log --pretty=format:%H -1)
