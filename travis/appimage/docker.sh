@@ -16,6 +16,8 @@ git clone https://github.com/dolphin-emu/dolphin.git
 cd dolphin/
 git submodule update --init --recursive
 
+ninja -C /tmp/zstd/build/cmake/build uninstall
+
 ### GET BUILD Number
 export LASTCOMMIT=$(git log --pretty=format:%H -1)
 export DOLPHINVER=$(wget -qO- https://dolphin-emu.org/download/dev/${LASTCOMMIT} | grep '<title>' | awk '{print $NF}' | cut -d '<' -f 1)
