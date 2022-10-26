@@ -32,7 +32,7 @@ echo "DOLPHIN Build $DOLPHINVER"
 
 mkdir build
 cd build
-cmake .. -G Ninja -DLINUX_LOCAL_DEV=true -DCMAKE_C_COMPILER=/usr/lib/ccache/gcc -DCMAKE_CXX_COMPILER=/usr/lib/ccache/g++ -DENABLE_TESTS=OFF
+cmake .. -G Ninja -DLINUX_LOCAL_DEV=true -DCMAKE_C_COMPILER=/usr/lib/ccache/$GCC_BINARY -DCMAKE_CXX_COMPILER=/usr/lib/ccache/$GXX_BINARY -DENABLE_TESTS=OFF
 ninja
 #ln -s ../../Data/Sys Binaries/
 
