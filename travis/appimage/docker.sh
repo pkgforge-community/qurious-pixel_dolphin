@@ -10,6 +10,8 @@ export PKG_CONFIG_PATH=$QT_BASE_DIR/lib/pkgconfig:$PKG_CONFIG_PATH
 export GCCVER=10
 export GCC_BINARY=gcc-${GCCVER}
 export GXX_BINARY=g++-${GCCVER}
+export CC=GCC_BINARY
+export CXX=GXX_BINARY
 
 add-apt-repository -y ppa:ubuntu-toolchain-r/test
 apt install -y $GCC_BINARY $GXX_BINARY
