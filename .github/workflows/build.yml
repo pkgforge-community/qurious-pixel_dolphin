@@ -27,7 +27,7 @@ jobs:
       uses: actions/checkout@v3
       with:
           clean: false
-          path: appimage
+          path: ci
 
     # Runs the Dolphin action
     - name: Prepare ccache timestamp
@@ -115,7 +115,7 @@ jobs:
         mkdir -p squashfs-root/usr/share/pixmaps && cp ./squashfs-root/dolphin-emu.svg ./squashfs-root/usr/share/pixmaps
         mkdir -p squashfs-root/usr/share/dolphin-emu
         cp -R Data/Sys ./squashfs-root/usr/bin
-        cp travis/appimage/{AppRun,update.sh} ./squashfs-root/
+        cp ci/travis/appimage/{AppRun,update.sh} ./squashfs-root/
         mv /tmp/AppImageUpdate-x86_64.AppImage ./squashfs-root/usr/bin/AppImageUpdate
         echo ${{ env.DOLPHINVER }} > ./squashfs-root/version.txt
         chmod a+x ./squashfs-root/AppRun
