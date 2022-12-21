@@ -11,9 +11,9 @@
 	fi
 
 if [ "$answer" -eq 0 ]; then 
-	$APPDIR/usr/bin/AppImageUpdate $PWD/Dolphin_Emulator-x86_64.AppImage && $PWD/Dolphin_Emulator-x86_64.AppImage
+	$APPDIR/usr/bin/AppImageUpdate $PWD/Dolphin_Emulator-x86_64.AppImage "$@" && $PWD/Dolphin_Emulator-x86_64.AppImage "$@"
 else
-	$APPDIR/AppRun-patched
+	$APPDIR/AppRun-patched "$@"
 fi
 exit 0
 
