@@ -129,7 +129,7 @@ jobs:
         ls . | grep *.AppImage
         mv $(ls . | grep *.AppImage) $GITHUB_WORKSPACE/artifacts
         ls -al $GITHUB_WORKSPACE/artifacts
-        sed -i 's/AppRun.wrapped/AppRun-patched/g' AppRun
+        sed -i 's/AppRun.wrapped/AppRun-patched/g' squashfs-root/AppRun
         /tmp/squashfs-root/AppRun --appdir="$GITHUB_WORKSPACE"/squashfs-root/ --plugin qt -d "$GITHUB_WORKSPACE"/squashfs-root/dolphin-emu.desktop -i "$GITHUB_WORKSPACE"/squashfs-root/dolphin-emu.svg \
         --exclude-library=libglib* --output appimage
         ls . | grep *.AppImage
