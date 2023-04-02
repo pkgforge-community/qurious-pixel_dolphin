@@ -30,19 +30,20 @@ jobs:
           path: ci
 
     # Runs the Dolphin action
-    - name: Prepare ccache timestamp
-      id: ccache_cache_timestamp
-      shell: cmake -P {0}
+    - name: Get Date
+      id: get-date
       run: |
-        string(TIMESTAMP current_date "%Y-%m-%d-%H;%M;%S" UTC)
-        message("::set-output name=timestamp::${current_date}")
+        echo "date=$(/bin/date -u "+%Y%m%d")" >> $GITHUB_OUTPUT
+      shell: bash
     - name: cache
       uses: actions/cache@v3
       with:
         path: ~/.ccache
-        key: build-ccache-${{ steps.ccache_cache_timestamp.outputs.timestamp }}
+        key: build-ccache-${{ steps.get-date.outputs.date }}
         restore-keys: |
           build-ccache-
+      env:
+        CCACHE_MAXSIZE: 200M
     - name: Install Qt
       run: |
         curl -sLO https://files.pythonhosted.org/packages/47/42/351389ca36c7adfc5f4e92d086cdb2bdbde13f1b89ee882f4a1cab2183ac/yaqti-2021.7.29-py3-none-any.whl
@@ -136,9 +137,10 @@ jobs:
         mv Dolphin_Emulator-x86_64.AppImage $GITHUB_WORKSPACE/uploads/Dolphin_${DOLPHINVER}.AppImage
         ls -al $GITHUB_WORKSPACE/uploads
       continue-on-error: true
-    - name: Upload artifacts
+    - name: Upload Static Build
       uses: actions/upload-artifact@v3
       with:
+        name: Dolphin_${{ env.DOLPHINVER }}
         path: uploads/
     - name: Upload Dolphin
       run: |
