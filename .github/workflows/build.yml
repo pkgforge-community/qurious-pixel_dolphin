@@ -11,7 +11,7 @@ jobs:
     name: dolphin bundled as appimage
     runs-on: ubuntu-20.04
     env:
-      yaqti: 6.4.0
+      yaqti: 6.4.3
     steps:
     - name: Checkout Upstream Repo
       uses: actions/checkout@v3
@@ -81,7 +81,7 @@ jobs:
         ninja
     - name: Package Dolphin-Binary
       run: |
-        mkdir -p $GITHUB_WORKSPACE/artifacts
+        mkdir -p $GITHUB_WORKSPACE/{artifacts,uploads}
         cp -P build/Binaries/dolphin-emu $GITHUB_WORKSPACE/artifacts
     - name: Package Dolphin-AppImage
       env:
@@ -129,14 +129,23 @@ jobs:
         ls . | grep *.AppImage
         mv $(ls . | grep *.AppImage) $GITHUB_WORKSPACE/artifacts
         ls -al $GITHUB_WORKSPACE/artifacts
-      continue-on-error: true  
+        sed -i 's/AppRun.wrapped/AppRun-patched/g' AppRun
+        /tmp/squashfs-root/AppRun --appdir="$GITHUB_WORKSPACE"/squashfs-root/ --plugin qt -d "$GITHUB_WORKSPACE"/squashfs-root/dolphin-emu.desktop -i "$GITHUB_WORKSPACE"/squashfs-root/dolphin-emu.svg \
+        --exclude-library=libglib* --output appimage
+        ls . | grep *.AppImage
+        mv $(ls . | grep *.AppImage) $GITHUB_WORKSPACE/uploads/Dolphin_${DOLPHINVER}.AppImage
+        ls -al $GITHUB_WORKSPACE/uploads
+      continue-on-error: true
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        path: uploads/
     - name: Upload Dolphin
       run: |
           ls -al artifacts/
           wget -c https://github.com/tcnksm/ghr/releases/download/v0.13.0/ghr_v0.13.0_linux_amd64.tar.gz
           tar xfv ghr_v0.13.0_linux_amd64.tar.gz
           ghr_v0.13.0_linux_amd64/ghr -u qurious-pixel -r dolphin -recreate -n 'Continuous build' -b "$(printf "DOLPHIN Build ${{ env.DOLPHINVER }}\nGitHub https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID")" continuous artifacts/
-    
       env:
         DEFAULT_BRANCH: git-actions
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
