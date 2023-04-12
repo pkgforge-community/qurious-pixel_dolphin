@@ -132,8 +132,7 @@ jobs:
         ls -al $GITHUB_WORKSPACE/artifacts
         sed -i 's/AppRun.wrapped/AppRun-patched/g' "$GITHUB_WORKSPACE"/squashfs-root/AppRun
         cat "$GITHUB_WORKSPACE"/squashfs-root/AppRun
-        /tmp/squashfs-root/AppRun --appdir="$GITHUB_WORKSPACE"/squashfs-root/ --plugin qt -d "$GITHUB_WORKSPACE"/squashfs-root/dolphin-emu.desktop -i "$GITHUB_WORKSPACE"/squashfs-root/dolphin-emu.svg \
-        --exclude-library=libglib* --output appimage
+        /tmp/squashfs-root/usr/bin/linuxdeploy-plugin-appimage --appdir="$GITHUB_WORKSPACE"/squashfs-root/
         ls . | grep *.AppImage
         mv Dolphin_Emulator-x86_64.AppImage $GITHUB_WORKSPACE/uploads/Dolphin_${DOLPHINVER}.AppImage
         ls -al $GITHUB_WORKSPACE/uploads
