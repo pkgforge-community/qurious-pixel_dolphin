@@ -78,12 +78,16 @@ jobs:
         mkdir -p "$HOME/.ccache"
         mkdir build
         cd build
-        cmake .. -GNinja -DLINUX_LOCAL_DEV=true -DCMAKE_C_COMPILER=/usr/lib/ccache/gcc-10 -DCMAKE_CXX_COMPILER=/usr/lib/ccache/g++-10 -DCMAKE_PREFIX_PATH="${{github.workspace}}/qt/${{ env.yaqti }}/gcc_64/"
+        cmake .. -GNinja -DCMAKE_C_COMPILER=/usr/lib/ccache/gcc-10 -DCMAKE_CXX_COMPILER=/usr/lib/ccache/g++-10 -DCMAKE_PREFIX_PATH="${{github.workspace}}/qt/${{ env.yaqti }}/gcc_64/" -Ddatadir:PATH="share/dolphin-emu" -DBIN_INSTALL_DIR="install/usr/bin" -DCMAKE_INSTALL_PREFIX="install/usr" -DINC_INSTALL_DIR="install/usr/include" -DLIB_INSTALL_DIR="install/usr/lib" -DPKGCONFIG_INSTALL_DIR="install/usr/lib/pkgconfig"
         ninja
+    - name: Install Dolphin
+      run: |
+        cd build
+        ninja install
     - name: Package Dolphin-Binary
       run: |
         mkdir -p $GITHUB_WORKSPACE/{artifacts,uploads}
-        cp -P build/Binaries/dolphin-emu $GITHUB_WORKSPACE/artifacts
+        cp -P build/install/usr/bin/dolphin-emu $GITHUB_WORKSPACE/artifacts
     - name: Package Dolphin-AppImage
       env:
         QT_BASE_DIR: /qt/${{ env.yaqti }}/gcc_64
@@ -105,18 +109,12 @@ jobs:
         mv /tmp/squashfs-root/usr/bin/patchelf /tmp/squashfs-root/usr/bin/patchelf.orig
         sudo cp /usr/bin/patchelf /tmp/squashfs-root/usr/bin/patchelf
         cd $GITHUB_WORKSPACE
-        mkdir -p squashfs-root/usr/bin
-        cp -P build/Binaries/dolphin-emu $GITHUB_WORKSPACE/squashfs-root/usr/bin/
+        mkdir -p squashfs-root
+        cp -a build/install/usr $GITHUB_WORKSPACE/squashfs-root/
         cp Data/dolphin-emu.svg ./squashfs-root/dolphin-emu.svg
         cp Data/dolphin-emu.desktop ./squashfs-root/dolphin-emu.desktop
         curl -sSfL https://github.com/AppImage/AppImageKit/releases/download/continuous/runtime-x86_64 -o ./squashfs-root/runtime
         curl -sSfL "https://github.com/RPCS3/AppImageKit-checkrt/releases/download/continuous2/AppRun-patched-x86_64" -o ./squashfs-root/AppRun-patched
-        mkdir -p squashfs-root/usr/share/applications && cp ./squashfs-root/dolphin-emu.desktop ./squashfs-root/usr/share/applications
-        mkdir -p squashfs-root/usr/share/icons && cp ./squashfs-root/dolphin-emu.svg ./squashfs-root/usr/share/icons
-        mkdir -p squashfs-root/usr/share/icons/hicolor/scalable/apps && cp ./squashfs-root/dolphin-emu.svg ./squashfs-root/usr/share/icons/hicolor/scalable/apps
-        mkdir -p squashfs-root/usr/share/pixmaps && cp ./squashfs-root/dolphin-emu.svg ./squashfs-root/usr/share/pixmaps
-        mkdir -p squashfs-root/usr/share/dolphin-emu
-        cp -R Data/Sys ./squashfs-root/usr/bin
         cp ci/travis/appimage/{AppRun,update.sh} ./squashfs-root/
         mv /tmp/AppImageUpdate-x86_64.AppImage ./squashfs-root/usr/bin/AppImageUpdate
         echo ${{ env.DOLPHINVER }} > ./squashfs-root/version.txt
