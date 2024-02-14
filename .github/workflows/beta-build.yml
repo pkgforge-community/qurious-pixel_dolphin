@@ -3,6 +3,7 @@ name: Dolphin-AppImage-Beta
 on:
   workflow_run:
     workflows: ["Dolphin-AppImage"]
+    types: [completed}
   workflow_dispatch:
 
 jobs:
